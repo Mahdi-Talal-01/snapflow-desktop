@@ -15,12 +15,15 @@ class AuthService
 
     public function register(Request $request)
     {
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = $request->password;
-        $user->image_url = $request->image_url;
+        $user = new User([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+            'image_url' => $request->image_url
+        ]);
+
         $user->save();
+
         $credentials = $request->only('email', 'password');
         $token = Auth::attempt($credentials);
         if ($token) {
