@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "fabric": "^6.6.2",
-    "react-fabricjs": "^0.1.6",
-    "react-image-crop": "^11.0.7"
-  }
-}
