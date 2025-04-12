@@ -1,0 +1,79 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal-content {
+  background-color: var(--bg-primary-color);
+  padding: 24px;
+  border-radius: 16px;
+  width: 400px;
+  text-align: center;
+  color: var(--text-primary-color);
+}
+
+.upload-area {
+  border: 2px dashed var(--text-primary-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 16px 0;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-area p {
+  margin: 20px 20px;
+}
+
+.select-button {
+  margin-top: 10px;
+  display: inline-block;
+  background-color: var(--primary-color);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.modal-buttons button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--bg-primary-color);
+  color: var(--text-primary-color);
+}
+
+.preview-image {
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  margin-top: 10px;
+}
+
+.upload-button {
+  background-color: var(--primary-color);
+  color: var(--text-primary-color);
+  border: none;
+  cursor: pointer;
+}
+
+.upload-button:disabled {
+  background-color: var(--primary-color);
+  color: var(--text-primary-color);
+  cursor: not-allowed;
+}
