@@ -1,0 +1,12 @@
+1. Laravel clean caches:
+      php artisan config:clear
+      php artisan cache:clear
+      php artisan route:clear
+      php artisan optimize
+2. laravel list routes 
+      php artisan route:list
+
+
+backend Tips :
+ 1. create controller 
+ 2. 
