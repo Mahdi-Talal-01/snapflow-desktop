@@ -1,7 +1,6 @@
 import { app, shell, BrowserWindow, ipcMain, protocol } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
 import fs from 'fs'
 import path from 'path'
 
@@ -12,7 +11,7 @@ if (!fs.existsSync(imagesDir)) {
 }
 
 function setupProtocol() {
-  protocol.registerFileProtocol('app', (request, callback) => {
+  protocol.registerFileProtocol('app', (request, callback) => { 
     try {
       const url = new URL(request.url)
       const filename = decodeURIComponent(url.pathname.substring(1)) // Remove app://

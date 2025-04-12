@@ -64,5 +64,4 @@ const EditImage = () => {
     </div>
   )
 }
-
 export default EditImage

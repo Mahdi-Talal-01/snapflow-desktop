@@ -1,9 +1,15 @@
 .home-container {
   padding: 2rem;
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background-color: var(--bg-secondary-color);
 }
-
+.logo {
+  font-size: 40px !important;
+  font-weight: bold;
+  background: linear-gradient(135deg, #002fff 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .home-header {
   display: flex;
   justify-content: space-between;
@@ -53,7 +59,9 @@
   overflow: hidden;
   background-color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .image-card:hover {
