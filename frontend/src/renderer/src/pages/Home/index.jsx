@@ -28,23 +28,13 @@ const Home = () => {
     loadUploadedImages()
   }, [])
 
-  useEffect(() => {
-    if (!isModalOpen && !isLoading) {
-      loadUploadedImages()
-    }
-  }, [isModalOpen])
+ 
 
   return (
     <div className="home-container">
       <div className="home-header">
-        <h1>SnapFlow Editor</h1>
-        <button
-          className="upload-button"
-          onClick={() => handleUploadClick(dispatch, openUploadModel)}
-        >
-          <Icon icon="mdi:upload" width="24" height="24" />
-          <span>Upload Image</span>
-        </button>
+        {/* <h1 className="logo">SnapFlow Editor</h1> */}
+      
       </div>
 
       <div className="gallery-section">
