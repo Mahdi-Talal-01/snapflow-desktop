@@ -1,0 +1,75 @@
+:root {
+  --primary-color: #164381;
+  --secondary-color: #1c1c1c;
+  --bg-primary-color: #131820;
+  --bg-secondary-color: #1b222c;
+  --text-primary-color: #ffffff;
+  --text-secondary-color: #6d8099;
+  --border-primary-color: #ffffff;
+  --border-05: 0.5px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.flex {
+  display: flex;
+}
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.gap-2 {
+  gap: 2rem;
+}
+
+.gap-1 {
+  gap: 1rem;
+}
+
+.gap-05 {
+  gap: 0.5rem;
+}
+
+
+
+
+
+.pintura-editor {
+  --color-primary: rgb(128, 0, 0) !important;
+  --color-primary-dark: yellow !important;
+  --color-primary-text: red !important;
+  --color-secondary: rgb(217, 0, 255) !important;
+  --color-secondary-dark: #bf04ac !important;
+}
+.pintura-editor-panel {
+  --color-background: 0, 0, 0 !important;
+  --color-foreground: 255, 255, 255 !important;
+}
+
+
+.main-container{
+  background-color: var(--bg-primary-color) !important;
+}
