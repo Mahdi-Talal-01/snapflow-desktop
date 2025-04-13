@@ -1,23 +1,20 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Home from './pages/Home'
 import EditImage from './pages/Editimage'
 import Layout from './Layout'
-function App() {
-  // const ipcHandle = () => window.electron.ipcRenderer.send('ping')
+import Auth from './pages/Auth'
 
+function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public routes without header */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-
-        {/* Protected and layout-wrapped routes */}
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/edit-image" element={<EditImage />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
     </BrowserRouter>

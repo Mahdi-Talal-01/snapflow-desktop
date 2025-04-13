@@ -11,14 +11,23 @@ if (!fs.existsSync(imagesDir)) {
 }
 
 function setupProtocol() {
-  protocol.registerFileProtocol('app', (request, callback) => { 
+  protocol.registerFileProtocol('app', (request, callback) => {
     try {
       const url = new URL(request.url)
-      const filename = decodeURIComponent(url.pathname.substring(1)) // Remove app://
+      const filename = decodeURIComponent(url.pathname.substring(1)) // Remove leading slash
       const filePath = join(imagesDir, filename)
+      
+      console.log('Protocol request:', {
+        url: request.url,
+        filename,
+        filePath,
+        exists: fs.existsSync(filePath)
+      })
+
       if (fs.existsSync(filePath)) {
         callback(filePath)
       } else {
+        console.error('File not found:', filePath)
         callback({ error: -6 }) // FILE_NOT_FOUND
       }
     } catch (error) {
@@ -28,6 +37,25 @@ function setupProtocol() {
   })
 }
 
+function getContentType(filename) {
+  const ext = path.extname(filename).toLowerCase()
+  switch (ext) {
+    case '.jpg':
+    case '.jpeg':
+      return 'image/jpeg'
+    case '.png':
+      return 'image/png'
+    case '.gif':
+      return 'image/gif'
+    case '.webp':
+      return 'image/webp'
+    case '.avif':
+      return 'image/avif'
+    default:
+      return 'application/octet-stream'
+  }
+}
+
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -35,10 +63,12 @@ function createWindow() {
     height: 670,
     show: false,
     autoHideMenuBar: true,
-
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      contextIsolation: true,
+      nodeIntegration: false,
+      webSecurity: true
     }
   })
 
@@ -87,44 +117,58 @@ ipcMain.handle('save-image', async (_, fileData) => {
 
 ipcMain.handle('get-images', async () => {
   try {
+    console.log('Getting images from:', imagesDir)
     const files = await fs.promises.readdir(imagesDir)
-    const imageFiles = files.filter((file) => /\.(jpg|jpeg|png|gif|avif)$/i.test(file))
-   
+    const imageFiles = files.filter(file => {
+      const ext = path.extname(file).toLowerCase()
+      return ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.avif'].includes(ext)
+    })
+    console.log('Found images:', imageFiles)
     return imageFiles
   } catch (error) {
+    console.error('Error getting images:', error)
     return []
   }
 })
 
 ipcMain.handle('get-image-path', async (_, filename) => {
-  const filePath = join(imagesDir, filename)
-  
-  return filePath
+  try {
+    console.log('Getting image path for:', filename)
+    const filePath = join(imagesDir, filename)
+    console.log('Image path:', filePath)
+    return filePath
+  } catch (error) {
+    console.error('Error getting image path:', error)
+    return null
+  }
 })
 
-ipcMain.handle('get-image-data', async (event, filename) => {
+ipcMain.handle('get-image-data', async (_, filename) => {
   try {
-    const imagesDir = join(app.getPath('userData'), 'images')
+    console.log('Getting image data for:', filename)
     const filePath = join(imagesDir, filename)
+    console.log('Reading file from:', filePath)
+    
+    if (!fs.existsSync(filePath)) {
+      console.error('File not found:', filePath)
+      return null
+    }
+
     const fileData = await fs.promises.readFile(filePath)
+    console.log('File read successfully, size:', fileData.length)
     return fileData.toString('base64')
   } catch (error) {
-    
+    console.error('Error getting image data:', error)
     return null
   }
 })
 
 ipcMain.handle('delete-image', async (_, filename) => {
   try {
+    console.log('Deleting image:', filename)
     const filePath = join(imagesDir, filename)
-    
-
-    if (!fs.existsSync(filePath)) {
-      return { success: false, error: 'File not found' }
-    }
-
     await fs.promises.unlink(filePath)
-    console.log('Image deleted successfully:', filePath)
+    console.log('Image deleted successfully')
     return { success: true }
   } catch (error) {
     console.error('Error deleting image:', error)
