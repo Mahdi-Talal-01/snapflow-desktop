@@ -2,23 +2,24 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Home from './pages/Home'
 import EditImage from './pages/EditImage'
 import Chat from './pages/Chat'
-import Header from './components/Header'
-import { useSelector } from 'react-redux'
+import Auth from './pages/Auth'
+import Layout from './Layout'
 
 const App = () => {
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
-
   return (
     <Router>
-      <div className="app">
-        <Header />
-        <Routes>
+      <Routes>
+        {/* Public routes without layout */}
+        <Route path="/auth" element={<Auth />} />
+
+        {/* Protected routes with layout */}
+        <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/edit-image" element={<EditImage />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
+        </Route>
+      </Routes>
     </Router>
   )
 }

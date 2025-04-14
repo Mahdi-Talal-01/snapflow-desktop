@@ -68,7 +68,7 @@ const Chat = () => {
       const response = {
         id: messages.length + 2,
         sender: 'other',
-        content: 'Thanks for your message! This is an automated response.',
+        content: 'Ahbab is here :) send a voice message kerml et7ams',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
       setMessages(prev => [...prev, response])

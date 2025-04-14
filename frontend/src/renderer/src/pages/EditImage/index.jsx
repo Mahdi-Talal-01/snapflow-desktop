@@ -54,14 +54,9 @@ const EditImage = () => {
 
   return (
     <div className="edit-image-container">
-      <div className="edit-image-header">
-        <button className="back-button" onClick={handleBack}>
-          <Icon icon="mdi:arrow-left" width="24" height="24" />
-          <span>Back</span>
-        </button>
-      </div>
       <ImageEditor imageUrl={imagefile.url} onSave={handleSave} />
     </div>
   )
 }
+
 export default EditImage

@@ -161,11 +161,11 @@
     color: rgba(255, 255, 255, 0.4);
     cursor: pointer;
     padding: 0.25rem;
-    border-radius: 4px;
+    /* border-radius: 4px; */
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    /* transition: all 0.2s ease; */
   }
   
   .password-toggle:hover {

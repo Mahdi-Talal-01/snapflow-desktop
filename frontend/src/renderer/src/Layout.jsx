@@ -8,7 +8,7 @@ const Layout = () => {
   const user = useSelector((state) => state.user.user)
   const navigate = useNavigate()
  useEffect(()=>{
-  if(!user){
+  if(user==null){
     navigate('/auth')
   }
  },[user,navigate])

@@ -11,7 +11,7 @@ import { setUser } from '../../redux/Slices/userSlice'
 
 const Auth = () => {
   const dispatch = useDispatch()
-//   const { login } = useUser()
+  //   const { login } = useUser()
   const navigate = useNavigate()
   const [form, handleChange] = useForm({
     name: '',
@@ -29,7 +29,7 @@ const Auth = () => {
       return {
         ip: response.data.ip,
         latitude: response.data.latitude,
-        longitude: response.data.longitude,
+        longitude: response.data.longitude
       }
     } catch (error) {
       console.error('Error fetching IP info:', error)
@@ -54,14 +54,14 @@ const Auth = () => {
         ...(isLogin ? {} : { name: form.name }),
         ip_address: ipInfo.ip,
         latitude: ipInfo.latitude,
-        longitude: ipInfo.longitude,
+        longitude: ipInfo.longitude
       }
 
       const endpoint = isLogin ? '/login' : '/register'
       const response = await request({
         method: 'POST',
         route: endpoint,
-        body: requestData,
+        body: requestData
       })
 
       if (response.success) {
@@ -69,7 +69,7 @@ const Auth = () => {
         // Store the token
         localStorage.setItem('access_token', response.data.token)
         dispatch(setUser(response.data))
-        
+
         navigate('/')
       } else {
         console.error('Authentication failed:', response)
@@ -100,17 +100,10 @@ const Auth = () => {
     <div className="auth-container">
       <div className="auth-form">
         <div className="auth-header">
-          <Icon 
-            icon="mdi:account-circle" 
-            width="48" 
-            height="48" 
-            className="auth-icon"
-          />
+          <Icon icon="mdi:account-circle" width="48" height="48" className="auth-icon" />
           <h1>{isLogin ? 'Welcome Back' : 'Create Account'}</h1>
           <p className="auth-subtitle">
-            {isLogin 
-              ? 'Sign in to continue to SnapFlow' 
-              : 'Register to start using SnapFlow'}
+            {isLogin ? 'Sign in to continue to SnapFlow' : 'Register to start using SnapFlow'}
           </p>
         </div>
         {error && (
@@ -147,23 +140,15 @@ const Auth = () => {
           <div className="input-group">
             <Icon icon="mdi:lock" className="input-icon" />
             <input
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? 'text' : 'password'}
               placeholder="Password"
               name="password"
               value={form.password}
               onChange={handleChange}
               required
             />
-            <button
-              type="button"
-              className="password-toggle"
-              onClick={togglePasswordVisibility}
-            >
-              <Icon 
-                icon={showPassword ? "mdi:eye-off" : "mdi:eye"} 
-                width="20" 
-                height="20" 
-              />
+            <button type="button" className="password-toggle" onClick={togglePasswordVisibility}>
+              <Icon icon={showPassword ? 'mdi:eye-off' : 'mdi:eye'} width="20" height="20" />
             </button>
           </div>
           <button
@@ -175,11 +160,7 @@ const Auth = () => {
               <Icon icon="mdi:loading" className="spin" width="24" height="24" />
             ) : (
               <>
-                <Icon
-                  icon={isLogin ? 'mdi:login' : 'mdi:account-plus'}
-                  width="24"
-                  height="24"
-                />
+                <Icon icon={isLogin ? 'mdi:login' : 'mdi:account-plus'} width="24" height="24" />
                 <span>{isLogin ? 'Sign In' : 'Create Account'}</span>
               </>
             )}
@@ -187,9 +168,7 @@ const Auth = () => {
         </form>
         <div className="toggle-auth">
           {isLogin ? "Don't have an account?" : 'Already have an account?'}
-          <button onClick={toggleAuthMode}>
-            {isLogin ? 'Register' : 'Sign In'}
-          </button>
+          <button onClick={toggleAuthMode}>{isLogin ? 'Register' : 'Sign In'}</button>
         </div>
       </div>
     </div>
