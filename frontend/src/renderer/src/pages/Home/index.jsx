@@ -26,16 +26,11 @@ const Home = () => {
 
   useEffect(() => {
     loadUploadedImages()
-  }, [])
-
- 
+  }, [isModalOpen])
 
   return (
     <div className="home-container">
-      <div className="home-header">
-        {/* <h1 className="logo">SnapFlow Editor</h1> */}
-      
-      </div>
+      <div className="home-header">{/* <h1 className="logo">SnapFlow Editor</h1> */}</div>
 
       <div className="gallery-section">
         {uploadedImages.length > 0 ? (

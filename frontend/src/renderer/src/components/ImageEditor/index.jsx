@@ -1,9 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import './style.css'
 import useImageEditorLogic from '../../hooks/useImageEditor'
+import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop'
+import { Icon } from '@iconify/react'
+import 'react-image-crop/dist/ReactCrop.css'
 
 const ImageEditor = ({ imageUrl, onSave }) => {
   const [selectedTool, setSelectedTool] = useState('transform')
+  const [crop, setCrop] = useState()
+  const [completedCrop, setCompletedCrop] = useState(null)
+  const [isCropping, setIsCropping] = useState(false)
+  const imgRef = useRef(null)
+  const previewCanvasRef = useRef(null)
 
   const {
     canvasRef,
@@ -15,11 +23,100 @@ const ImageEditor = ({ imageUrl, onSave }) => {
     getImageDataUrl
   } = useImageEditorLogic(imageUrl)
 
+  // Load image into canvas when component mounts or imageUrl changes
+  useEffect(() => {
+    if (imageUrl && canvasRef.current) {
+      const img = new Image()
+      img.crossOrigin = 'anonymous'
+      img.onload = () => {
+        const canvas = canvasRef.current
+        const ctx = canvas.getContext('2d')
+        canvas.width = img.width
+        canvas.height = img.height
+        ctx.drawImage(img, 0, 0)
+      }
+      img.src = imageUrl
+    }
+  }, [imageUrl])
+
+  const onImageLoad = (e) => {
+    const { width, height } = e.currentTarget
+    const crop = centerCrop(
+      makeAspectCrop(
+        {
+          unit: '%',
+          width: 90,
+        },
+        1,
+        width,
+        height
+      ),
+      width,
+      height
+    )
+    setCrop(crop)
+  }
+
+  const handleCropComplete = (crop) => {
+    setCompletedCrop(crop)
+  }
+
+  const handleCrop = () => {
+    if (!completedCrop || !imgRef.current || !previewCanvasRef.current) {
+      return
+    }
+
+    const image = imgRef.current
+    const canvas = previewCanvasRef.current
+    const crop = completedCrop
+
+    const scaleX = image.naturalWidth / image.width
+    const scaleY = image.naturalHeight / image.height
+    const ctx = canvas.getContext('2d')
+    const pixelRatio = window.devicePixelRatio
+
+    canvas.width = crop.width * pixelRatio
+    canvas.height = crop.height * pixelRatio
+
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
+    ctx.imageSmoothingQuality = 'high'
+
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width,
+      crop.height
+    )
+
+    // Update the main canvas with the cropped image
+    const mainCtx = canvasRef.current.getContext('2d')
+    mainCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
+    mainCtx.drawImage(canvas, 0, 0)
+    
+    // Reset cropping state
+    setIsCropping(false)
+    setSelectedTool('transform')
+  }
+
   const handleSave = () => {
     const dataUrl = getImageDataUrl()
     if (dataUrl) {
       onSave(dataUrl)
     }
+  }
+
+  const handleStartCrop = () => {
+    setIsCropping(true)
+  }
+
+  const handleCancelCrop = () => {
+    setIsCropping(false)
+    setSelectedTool('transform')
   }
 
   return (
@@ -43,6 +140,15 @@ const ImageEditor = ({ imageUrl, onSave }) => {
             onClick={() => setSelectedTool('watermark')}
           >
             Watermark
+          </button>
+          <button
+            className={`tab-button ${selectedTool === 'crop' ? 'active' : ''}`}
+            onClick={() => {
+              setSelectedTool('crop')
+              handleStartCrop()
+            }}
+          >
+            Crop
           </button>
         </div>
       </div>
@@ -125,10 +231,47 @@ const ImageEditor = ({ imageUrl, onSave }) => {
               </div>
             </>
           )}
+
+          {selectedTool === 'crop' && (
+            <div className="crop-controls">
+              <div className="crop-instructions">
+                <p>Drag the corners or edges to adjust the crop area</p>
+              </div>
+              <div className="crop-actions">
+                <button onClick={handleCancelCrop} className="cancel-button">
+                  <Icon icon="mdi:close" width="20" height="20" />
+                  Cancel
+                </button>
+                <button onClick={handleCrop} className="apply-crop-button">
+                  <Icon icon="mdi:check" width="20" height="20" />
+                  Apply Crop
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="canvas-container">
-          <canvas ref={canvasRef} />
+          {selectedTool === 'crop' ? (
+            <div className="crop-container">
+              <ReactCrop
+                crop={crop}
+                onChange={(c) => setCrop(c)}
+                onComplete={handleCropComplete}
+                aspect={1}
+              >
+                <img
+                  ref={imgRef}
+                  src={imageUrl}
+                  onLoad={onImageLoad}
+                  style={{ maxWidth: '100%', maxHeight: '100%' }}
+                />
+              </ReactCrop>
+            </div>
+          ) : (
+            <canvas ref={canvasRef} />
+          )}
+          <canvas ref={previewCanvasRef} style={{ display: 'none' }} />
         </div>
       </div>
 
