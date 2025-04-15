@@ -4,6 +4,8 @@ import EditImage from './pages/EditImage'
 import Chat from './pages/Chat'
 import Auth from './pages/Auth'
 import Layout from './Layout'
+import ErrorBoundary from './components/ErrorBoundary'
+import { ChatProvider } from './components/ChatProvider'
 
 const App = () => {
   return (
@@ -16,7 +18,7 @@ const App = () => {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/edit-image" element={<EditImage />} />
-          <Route path="/chat" element={<Chat />} />
+          <Route path="/chat" element={<ErrorBoundary><ChatProvider><Chat /></ChatProvider></ErrorBoundary>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

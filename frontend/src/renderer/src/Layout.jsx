@@ -7,11 +7,11 @@ import { useEffect } from 'react'
 const Layout = () => {
   const user = useSelector((state) => state.user.user)
   const navigate = useNavigate()
- useEffect(()=>{
-  if(user==null){
-    navigate('/auth')
-  }
- },[user,navigate])
+  useEffect(() => {
+    if (user == null) {
+      navigate('/auth')
+    }
+  }, [user, navigate])
 
   return (
     <>
