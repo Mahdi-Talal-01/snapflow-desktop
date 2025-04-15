@@ -1,6 +1,6 @@
 services:
   server:
-    image: mahditalaldev/snapflow:latest
+    image: mahditalaldev/snapflowimage:latest
     environment:
       - LARAVEL_DATABASE_HOST=database
       - LARAVEL_DATABASE_NAME=snapflow_db
