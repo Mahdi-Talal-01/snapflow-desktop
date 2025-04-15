@@ -11,7 +11,7 @@ if (!fs.existsSync(imagesDir)) {
 }
 
 function setupProtocol() {
-  protocol.registerFileProtocol('app', (request, callback) => { 
+  protocol.registerFileProtocol('app', (request, callback) => {
     try {
       const url = new URL(request.url)
       const filename = decodeURIComponent(url.pathname.substring(1)) // Remove app://
@@ -35,11 +35,27 @@ function createWindow() {
     height: 670,
     show: false,
     autoHideMenuBar: true,
-
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      webSecurity: true,
+      allowRunningInsecureContent: false
     }
+  })
+
+  // Set Content Security Policy
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self' 'unsafe-inline' 'unsafe-eval';" +
+            "img-src 'self' data: blob: app:;" +
+            "media-src 'self' blob:;" +
+            "connect-src 'self' ws://localhost:3000 wss://localhost:3000 http://localhost:3000 https://localhost:3000 http://127.0.0.1:3000 https://127.0.0.1:3000 https://api.iconify.design https://api.unisvg.com https://api.simplesvg.com https://ipapi.co http://localhost:8000 https://localhost:8000 http://127.0.0.1:8000 https://127.0.0.1:8000;"
+        ]
+      }
+    })
   })
 
   mainWindow.on('ready-to-show', () => {
@@ -70,17 +86,15 @@ ipcMain.handle('save-image', async (_, fileData) => {
     const baseName = path.basename(name, extension)
     const uniqueName = `${baseName}_${timestamp}${extension}`
     const filePath = join(imagesDir, uniqueName)
-    // const extension = path.extname(name) // 
-    // const baseName = path.basename(name, extension) // 
-    // const uniqueName = `${baseName}${extension}` // 
+    // const extension = path.extname(name) //
+    // const baseName = path.basename(name, extension) //
+    // const uniqueName = `${baseName}${extension}` //
     // const filePath = join(imagesDir, uniqueName)
-
 
     const buffer = Buffer.from(data, 'base64')
     await fs.promises.writeFile(filePath, buffer)
     return { success: true, path: filePath, filename: uniqueName }
   } catch (error) {
-  
     return { success: false, error: error.message }
   }
 })
@@ -89,7 +103,7 @@ ipcMain.handle('get-images', async () => {
   try {
     const files = await fs.promises.readdir(imagesDir)
     const imageFiles = files.filter((file) => /\.(jpg|jpeg|png|gif|avif)$/i.test(file))
-   
+
     return imageFiles
   } catch (error) {
     return []
@@ -98,7 +112,7 @@ ipcMain.handle('get-images', async () => {
 
 ipcMain.handle('get-image-path', async (_, filename) => {
   const filePath = join(imagesDir, filename)
-  
+
   return filePath
 })
 
@@ -109,7 +123,6 @@ ipcMain.handle('get-image-data', async (event, filename) => {
     const fileData = await fs.promises.readFile(filePath)
     return fileData.toString('base64')
   } catch (error) {
-    
     return null
   }
 })
@@ -117,7 +130,6 @@ ipcMain.handle('get-image-data', async (event, filename) => {
 ipcMain.handle('delete-image', async (_, filename) => {
   try {
     const filePath = join(imagesDir, filename)
-    
 
     if (!fs.existsSync(filePath)) {
       return { success: false, error: 'File not found' }
@@ -131,7 +143,6 @@ ipcMain.handle('delete-image', async (_, filename) => {
     return { success: false, error: error.message }
   }
 })
-
 
 app.whenReady().then(() => {
   // Set app user model id for windows
@@ -158,15 +169,3 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
-
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
