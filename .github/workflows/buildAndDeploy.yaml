@@ -3,7 +3,7 @@ name: Push and Run
 on:
   push:
     branches:
-      - main
+      - deploy
 
 jobs:
   Build-Laravel-And-Push-Dockerhub:
