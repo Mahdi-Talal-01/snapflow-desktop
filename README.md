@@ -1,7 +1,5 @@
 # SnapFlow Desktop
 
-![SnapFlow Logo](assets/logo.png)
-
 ## Overview
 
 SnapFlow Desktop is a powerful, modern desktop application built with Electron and React that provides a seamless chat experience with advanced content moderation capabilities. The application features a robust real-time messaging system with AI-powered content filtering to ensure a safe and productive communication environment.
